@@ -7,16 +7,19 @@ bool printAll = false;
 
 bool check(int ch, int row, int col)
 {
+  // To check if ch is present in row
   for (int c = 0; c < boardsize; c++)
   {
     if (c != col && board[row][c] == ch)
       return false;
   }
+  // To check if ch is present in column
   for (int r = 0; r < boardsize; r++)
   {
     if (r != row && board[r][col] == ch)
       return false;
   }
+  // To find the top-left cell of the subgrid containing (row,col)
   int str = (row / cellsize) * cellsize;
   int stc = (col / cellsize) * cellsize;
   for (int dx = 0; dx < cellsize; dx++)
