@@ -1,3 +1,6 @@
+// Sudoku Solver using Backtracking with Bitmask Optimization
+// Supports N×N boards (tested for 4×4 and 9×9)
+
 #include <bits/stdc++.h>
 using namespace std;
 
@@ -5,34 +8,33 @@ int boardsize, cellsize, solutioncount = 0;
 vector<vector<int>> board;
 bool printAll = false;
 
-bool check(int ch, int row, int col)
+// Bitmasks to track used numbers in rows, columns and subgrids
+vector<int> takenRow;
+vector<int> takenCol;
+vector<vector<int>> takenGrid;
+
+// Returns a bitmask of valid numbers that can be placed at (row,col)
+int getchoices(int row, int col)
 {
-  // To check if ch is present in row
-  for (int c = 0; c < boardsize; c++)
-  {
-    if (c != col && board[row][c] == ch)
-      return false;
-  }
-  // To check if ch is present in column
-  for (int r = 0; r < boardsize; r++)
-  {
-    if (r != row && board[r][col] == ch)
-      return false;
-  }
-  // To find the top-left cell of the subgrid containing (row,col)
-  int str = (row / cellsize) * cellsize;
-  int stc = (col / cellsize) * cellsize;
-  for (int dx = 0; dx < cellsize; dx++)
-  {
-    for (int dy = 0; dy < cellsize; dy++)
-    {
-      if (dx + str == row && dy + stc == col)
-        continue;
-      if (board[dx + str][dy + stc] == ch)
-        return false;
-    }
-  }
-  return true;
+  int taken = takenRow[row] | takenCol[col] | takenGrid[row / cellsize][col / cellsize];
+  int fullMask = (1 << (boardsize + 1)) - 2;
+  return fullMask & (~taken);
+}
+
+// Place a number and update constraint masks
+void makemove(int ch, int row, int col)
+{
+  takenRow[row] ^= (1 << ch);
+  takenCol[col] ^= (1 << ch);
+  takenGrid[row / cellsize][col / cellsize] ^= (1 << ch);
+}
+
+// Remove a number and update constraint masks
+void revertmove(int ch, int row, int col)
+{
+  takenRow[row] ^= (1 << ch);
+  takenCol[col] ^= (1 << ch);
+  takenGrid[row / cellsize][col / cellsize] ^= (1 << ch);
 }
 
 void rec(int row, int col)
@@ -61,38 +63,44 @@ void rec(int row, int col)
   }
   if (board[row][col] == 0)
   {
-    for (int ch = 1; ch <= (boardsize); ch++)
+    int chmask = getchoices(row, col);
+    // Try all valid candidates using bit manipulation
+    while (chmask)
     {
-      if (check(ch, row, col))
-      {
-        board[row][col] = ch;
-        rec(row, col + 1);
-        board[row][col] = 0;
-      }
+      int pos = chmask & (~(chmask - 1));
+      int pos_index = __builtin_ctz(pos);
+      board[row][col] = pos_index;
+      makemove(pos_index, row, col);
+      rec(row, col + 1);
+      revertmove(pos_index, row, col);
+      board[row][col] = 0;
+      chmask ^= pos;
     }
   }
   else
   {
-    int val = board[row][col];
-    if (check(val, row, col))
-    {
-      rec(row, col + 1);
-    }
+    rec(row, col + 1);
   }
 }
 
 void solve()
 {
+  solutioncount = 0;
   cout << "Enter the boardsize \n";
   cin >> boardsize;
   cellsize = sqrt(boardsize);
   board.assign(boardsize, vector<int>(boardsize));
+  takenRow.assign(boardsize, 0);
+  takenCol.assign(boardsize, 0);
+  takenGrid.assign(cellsize, vector<int>(cellsize, 0));
   cout << "Enter the board values \n";
   for (int i = 0; i < boardsize; i++)
   {
     for (int j = 0; j < boardsize; j++)
     {
       cin >> board[i][j];
+      if (board[i][j] != 0)
+        makemove(board[i][j], i, j);
     }
   }
   cout << "Should all solutions be printed(type y if yes or n if no) \n";
