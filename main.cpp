@@ -47,8 +47,7 @@ void rec(int row, int col)
     solutioncount++;
     if (!printAll && solutioncount > 1)
       return;
-    cout << "Solution: "
-         << solutioncount << '\n';
+    // cout << "Solution: "<< solutioncount << '\n';
     for (int i = 0; i < boardsize; i++)
     {
       for (int j = 0; j < boardsize; j++)
@@ -83,11 +82,11 @@ void rec(int row, int col)
 
 void solve()
 {
-  cout << "Enter the boardsize \n";
+  // cout << "Enter the boardsize \n";
   cin >> boardsize;
   cellsize = sqrt(boardsize);
   board.assign(boardsize, vector<int>(boardsize));
-  cout << "Enter the board values \n";
+  // cout << "Enter the board values \n";
   for (int i = 0; i < boardsize; i++)
   {
     for (int j = 0; j < boardsize; j++)
@@ -95,7 +94,7 @@ void solve()
       cin >> board[i][j];
     }
   }
-  cout << "Should all solutions be printed(type y if yes or n if no) \n";
+  // cout << "Should all solutions be printed(type y if yes or n if no) \n";
   char c;
   cin >> c;
   if (c == 'y')

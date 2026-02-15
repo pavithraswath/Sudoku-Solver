@@ -1,0 +1,24 @@
+{
+  "name": "sudoku-solver",
+  "version": "1.0.0",
+  "description": "A C++ program that solves Sudoku puzzles using backtracking with bitmask optimization.",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pavithraswath/Sudoku-Solver.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/pavithraswath/Sudoku-Solver/issues"
+  },
+  "homepage": "https://github.com/pavithraswath/Sudoku-Solver#readme",
+  "dependencies": {
+    "express": "^5.2.1"
+  }
+}
